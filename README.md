@@ -22,6 +22,8 @@ An [MCP](https://modelcontextprotocol.io) server that connects Claude to your ow
 
 It works through the Telegram user API (Telethon), so it sees what you see in your app: public channels, your private channels and groups, comments under posts. The session file stays on your computer
 
+<img src="https://raw.githubusercontent.com/Kochurin/telegram-channels-mcp/main/assets/demo.gif" alt="Claude asks for channel stats and the best post, then drafts a post and shows a preview before sending" width="100%">
+
 ## What you can ask
 
 - "What did @durov post this month? Summarize in 5 bullets"
@@ -40,6 +42,8 @@ You need [uv](https://docs.astral.sh/uv/getting-started/installation/) and your 
 ```bash
 uvx telegram-channels-mcp login
 ```
+
+Login code doesn't arrive? Run `uvx telegram-channels-mcp login --qr` and scan the QR code in Telegram → Settings → Devices → Link Desktop Device
 
 Latest code from GitHub instead of PyPI: replace `uvx telegram-channels-mcp` with `uvx --from git+https://github.com/Kochurin/telegram-channels-mcp telegram-channels-mcp`
 

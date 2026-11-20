@@ -39,7 +39,44 @@ def _restrict(path) -> None:
         pass
 
 
-async def _login(as_string: bool) -> None:
+async def _qr_login(client) -> None:
+    """Log in by scanning a QR code in the Telegram app, no SMS or login code needed"""
+    import webbrowser
+
+    import qrcode
+    import qrcode.image.svg
+    from telethon import errors
+
+    await client.connect()
+    if await client.is_user_authorized():
+        return
+    qr_file = CONFIG_DIR / "login-qr.svg"
+    qr_login = await client.qr_login()
+    print()
+    print("Open Telegram on your phone: Settings > Devices > Link Desktop Device, and scan the QR code")
+    print(f"The QR code also opens in your browser: {qr_file}")
+    print()
+    try:
+        while True:
+            code = qrcode.QRCode(border=2)
+            code.add_data(qr_login.url)
+            code.print_ascii(invert=True)
+            qrcode.make(qr_login.url, image_factory=qrcode.image.svg.SvgPathImage).save(str(qr_file))
+            webbrowser.open(qr_file.as_uri())
+            try:
+                await qr_login.wait(timeout=25)
+                break
+            except asyncio.TimeoutError:
+                print("QR code expired, here is a new one")
+                print()
+                await qr_login.recreate()
+    except errors.SessionPasswordNeededError:
+        await client.sign_in(password=getpass.getpass("2FA password (hidden): "))
+    finally:
+        qr_file.unlink(missing_ok=True)
+
+
+async def _login(as_string: bool, use_qr: bool = False) -> None:
     from telethon import TelegramClient
     from telethon.sessions import StringSession
 
@@ -51,8 +88,11 @@ async def _login(as_string: bool) -> None:
     else:
         settings.session_string = None
         client = build_client(settings)
-    # Telethon asks for the phone number, the login code and the 2FA password right here in the terminal
-    await client.start()
+    if use_qr:
+        await _qr_login(client)
+    else:
+        # Telethon asks for the phone number, the login code and the 2FA password right here in the terminal
+        await client.start()
     me = await client.get_me()
     print(f"Logged in as {me.first_name or ''} (@{me.username or 'no username'})")
     if as_string:
@@ -88,13 +128,14 @@ def main() -> None:
     sub.add_parser("serve", help="run the MCP server over stdio (default)")
     login = sub.add_parser("login", help="log in to Telegram once and save the session")
     login.add_argument("--string", action="store_true", help="print a session string instead of saving a file")
+    login.add_argument("--qr", action="store_true", help="log in by scanning a QR code in the Telegram app")
     sub.add_parser("whoami", help="check that the saved session works")
     args = parser.parse_args()
 
     try:
         if args.command == "login":
             _ask_api_keys()
-            asyncio.run(_login(args.string))
+            asyncio.run(_login(args.string, args.qr))
         elif args.command == "whoami":
             asyncio.run(_whoami())
         else:

@@ -17,6 +17,7 @@ dependencies = [
     "mcp>=2.0,<3",
     "telethon>=1.36",
     "python-dotenv>=1.0",
+    "qrcode>=7.4",
 ]
 
 [project.urls]
