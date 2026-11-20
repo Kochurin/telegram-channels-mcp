@@ -1,0 +1,16 @@
+# secrets
+.env
+*.session
+*.session-journal
+session*
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+dist/
+build/
+*.egg-info/
+
+# banner build
+node_modules/

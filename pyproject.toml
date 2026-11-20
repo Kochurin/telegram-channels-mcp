@@ -1,0 +1,34 @@
+[project]
+name = "telegram-channels-mcp"
+version = "0.1.0"
+description = "MCP server that lets Claude read, search, analyze and post to your Telegram channels through your own account"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Kochurin" }]
+requires-python = ">=3.10"
+keywords = ["mcp", "telegram", "claude", "telethon", "model-context-protocol", "channels", "analytics"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Topic :: Communications :: Chat",
+]
+dependencies = [
+    "mcp>=2.0,<3",
+    "telethon>=1.36",
+    "python-dotenv>=1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Kochurin/telegram-channels-mcp"
+Issues = "https://github.com/Kochurin/telegram-channels-mcp/issues"
+
+[project.scripts]
+telegram-channels-mcp = "telegram_channels_mcp.cli:main"
+
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/telegram_channels_mcp"]
