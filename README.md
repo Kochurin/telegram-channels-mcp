@@ -1,4 +1,6 @@
-<img src="assets/banner.png" alt="telegram-channels-mcp: Claude reads, searches and analyzes your Telegram channels">
+<!-- mcp-name: io.github.Kochurin/telegram-channels-mcp -->
+
+<img src="https://raw.githubusercontent.com/Kochurin/telegram-channels-mcp/main/assets/banner.png" alt="telegram-channels-mcp: Claude reads, searches and analyzes your Telegram channels">
 
 <p align="center">
   <a href="#install"><b>Install</b></a> &nbsp;|&nbsp;
@@ -11,7 +13,7 @@
   <a href="https://github.com/Kochurin/telegram-channels-mcp/actions/workflows/ci.yml"><img src="https://github.com/Kochurin/telegram-channels-mcp/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-3776AB" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/MCP-server-111111" alt="MCP server">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-9b9b9f" alt="MIT"></a>
+  <a href="https://github.com/Kochurin/telegram-channels-mcp/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-9b9b9f" alt="MIT"></a>
 </p>
 
 ---
@@ -36,15 +38,17 @@ You need [uv](https://docs.astral.sh/uv/getting-started/installation/) and your 
 **1. Log in once** (asks for api_id, api_hash, phone, code and 2FA password right in your terminal):
 
 ```bash
-uvx --from git+https://github.com/Kochurin/telegram-channels-mcp telegram-channels-mcp login
+uvx telegram-channels-mcp login
 ```
+
+Latest code from GitHub instead of PyPI: replace `uvx telegram-channels-mcp` with `uvx --from git+https://github.com/Kochurin/telegram-channels-mcp telegram-channels-mcp`
 
 Keys go to `~/.telegram-channels-mcp/.env`, the session to `~/.telegram-channels-mcp/session.session`. Nothing is sent anywhere except Telegram
 
 **2. Connect to Claude Code:**
 
 ```bash
-claude mcp add telegram -- uvx --from git+https://github.com/Kochurin/telegram-channels-mcp telegram-channels-mcp
+claude mcp add telegram -- uvx telegram-channels-mcp
 ```
 
 Check with `/mcp` inside Claude Code
@@ -56,11 +60,7 @@ Check with `/mcp` inside Claude Code
   "mcpServers": {
     "telegram": {
       "command": "uvx",
-      "args": [
-        "--from",
-        "git+https://github.com/Kochurin/telegram-channels-mcp",
-        "telegram-channels-mcp"
-      ]
+      "args": ["telegram-channels-mcp"]
     }
   }
 }
@@ -98,7 +98,7 @@ Chats can be passed as `@username`, a `t.me` link, a `t.me/c/...` link or a nume
 
 ## Settings
 
-All optional except the API keys. Put them in `~/.telegram-channels-mcp/.env` or into `env` of the MCP config. See [.env.example](.env.example)
+All optional except the API keys. Put them in `~/.telegram-channels-mcp/.env` or into `env` of the MCP config. See [.env.example](https://github.com/Kochurin/telegram-channels-mcp/blob/main/.env.example)
 
 | Variable | Meaning |
 |---|---|
@@ -112,7 +112,7 @@ All optional except the API keys. Put them in `~/.telegram-channels-mcp/.env` or
 Check the session any time:
 
 ```bash
-uvx --from git+https://github.com/Kochurin/telegram-channels-mcp telegram-channels-mcp whoami
+uvx telegram-channels-mcp whoami
 ```
 
 ## Troubleshooting

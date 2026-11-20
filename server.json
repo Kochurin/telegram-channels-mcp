@@ -1,0 +1,34 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Kochurin/telegram-channels-mcp",
+  "title": "Telegram channels",
+  "description": "Read, search and analyze Telegram channels from your own account, post with preview",
+  "repository": {
+    "url": "https://github.com/Kochurin/telegram-channels-mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "telegram-channels-mcp",
+      "version": "0.1.0",
+      "runtimeHint": "uvx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "TELEGRAM_READ_ONLY",
+          "description": "Set to 1 to hide the tools that publish posts and reply to comments",
+          "isRequired": false
+        },
+        {
+          "name": "TELEGRAM_SESSION_PATH",
+          "description": "Session file created by `telegram-channels-mcp login`, default ~/.telegram-channels-mcp/session",
+          "isRequired": false
+        }
+      ]
+    }
+  ]
+}
