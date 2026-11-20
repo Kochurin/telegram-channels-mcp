@@ -59,7 +59,7 @@ Check with `/mcp` inside Claude Code
 }
 ```
 
-Restart Claude Desktop. If it can't find `uvx`, put the full path, for example `C:\\Users\\you\\.local\\bin\\uvx.exe` or `/Users/you/.local/bin/uvx`
+Restart Claude Desktop. If it can't find `uvx`, put the full path, for example `C:\Users\you\.local\bin\uvx.exe` (write it with double backslashes inside JSON) or `/Users/you/.local/bin/uvx`
 
 Want a read-only setup? Add `"env": {"TELEGRAM_READ_ONLY": "1"}` and the write tools disappear
 
