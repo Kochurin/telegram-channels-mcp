@@ -7,6 +7,13 @@
   <a href="#по-русски"><b>По-русски</b></a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/Kochurin/telegram-channels-mcp/actions/workflows/ci.yml"><img src="https://github.com/Kochurin/telegram-channels-mcp/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/python-3.10%2B-3776AB" alt="Python 3.10+">
+  <img src="https://img.shields.io/badge/MCP-server-111111" alt="MCP server">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-9b9b9f" alt="MIT"></a>
+</p>
+
 ---
 
 An [MCP](https://modelcontextprotocol.io) server that connects Claude to your own Telegram account. Ask Claude to read a channel, find an old post, compare this week's reach with last week's, draft a post and publish it after you say yes
@@ -73,14 +80,17 @@ Want a read-only setup? Add `"env": {"TELEGRAM_READ_ONLY": "1"}` and the write t
 | `channel_stats` | Subscribers, average and median views, reach %, reactions, posts per day, best post |
 | `top_posts` | Best posts for the last N days by views, reactions, forwards or comments |
 | `get_comments` | Comments under a channel post |
-| `publish_post` | Post text or text with an image to your channel. **Preview first, sends only with `confirm=true`** |
-| `reply_comment` | Comment under your post or reply to a specific comment. **Preview first, sends only with `confirm=true`** |
+| `publish_post` | Post text or text with an image to your channel. **Preview first, sends only with the confirm token** |
+| `reply_comment` | Comment under your post or reply to a specific comment. **Preview first, sends only with the confirm token** |
 
 Chats can be passed as `@username`, a `t.me` link, a `t.me/c/...` link or a numeric id from `list_chats`
 
 ## Safety
 
-- Write tools never send on the first call. They return a preview, Claude shows it to you, and only your explicit yes leads to a second call with `confirm=true`. Both tools carry the destructive hint, so Claude Code and Claude Desktop ask your permission before each call unless you allowed it for good
+- Write tools never send on the first call. They return a preview and a one-time `confirm_token`, Claude shows the preview to you, and only after your yes repeats the call with the token. The token is tied to the exact text, channel and image, so the post can't change between your yes and the send. It dies when the server restarts
+- Both write tools carry the destructive hint, so Claude Code and Claude Desktop ask your permission before each call unless you allowed it for good
+- Only pictures (`.jpg`, `.png`, `.webp`, `.gif`) can be attached. A prompt injection in someone's post can't make Claude upload a private file to your channel
+- Claude is told that text from Telegram is data, not instructions
 - Posting and replying work only in channels where you are the owner or an admin with posting rights
 - `TELEGRAM_READ_ONLY=1` removes the write tools. `TELEGRAM_WRITE_ALLOWLIST=mychannel` limits writing to the channels you list
 - There is no tool for private messages, deleting or editing. Claude can read your chats but can't write to people
@@ -105,6 +115,12 @@ Check the session any time:
 uvx --from git+https://github.com/Kochurin/telegram-channels-mcp telegram-channels-mcp whoami
 ```
 
+## Troubleshooting
+
+- **`database is locked`**: two copies of the server use one session file, for example Claude Code and Claude Desktop at the same time. Give the second one its own session: run `login` with another `TELEGRAM_SESSION_PATH` and put that path into its `env`
+- **`Telegram session is not authorized`**: run `login` again. The session also ends if you terminate it in Telegram → Settings → Devices
+- **Long pauses**: Telegram limits request rates (FloodWait). Telethon waits out short limits by itself. If it happens often, ask for fewer posts at once
+
 ## Run from source
 
 ```bash
@@ -112,6 +128,7 @@ git clone https://github.com/Kochurin/telegram-channels-mcp
 cd telegram-channels-mcp
 uv run telegram-channels-mcp login
 npx @modelcontextprotocol/inspector uv run telegram-channels-mcp
+uv run pytest
 ```
 
 ## По-русски
@@ -122,10 +139,13 @@ MCP-сервер, через который Claude работает с ваши�
 
 Установка: получите `api_id` и `api_hash` на [my.telegram.org/apps](https://my.telegram.org/apps), выполните команду `login` из раздела [Install](#install) и введите номер и код в своём терминале. Потом одна команда `claude mcp add` для Claude Code или блок JSON для Claude Desktop
 
+Если Telegram в России тормозит или не грузит медиа, помогут [бесплатные MTProto-прокси](https://github.com/Kochurin/telegram-mtproto-proxy). Для остального интернета, в том числе на мобильном с белыми списками, есть [@SkyrimVPN_bot](https://t.me/SkyrimVPN_bot?start=gitmcp), первые 3 дня бесплатно · [сайт](https://skyrim.connecto.lol/?utm_source=gitmcp)
+
 ## Other projects
 
-- [telegram-mtproto-proxy](https://github.com/Kochurin/telegram-mtproto-proxy)
-- [awesome-obhod-blokirovok](https://github.com/Kochurin/awesome-obhod-blokirovok)
-- [blockcheck](https://github.com/Kochurin/blockcheck)
+- [telegram-mtproto-proxy](https://github.com/Kochurin/telegram-mtproto-proxy): free MTProto proxies for Telegram, updated every hour
+- [blockcheck](https://github.com/Kochurin/blockcheck): check in your browser which services are blocked for you
+- [awesome-obhod-blokirovok](https://github.com/Kochurin/awesome-obhod-blokirovok): tools for getting around internet blocks, in Russian
+- [SkyrimVPN](https://github.com/Kochurin/SkyrimVPN): VPN that works on mobile internet with whitelists, [Telegram bot](https://t.me/SkyrimVPN_bot?start=gitmcp)
 
 MIT License

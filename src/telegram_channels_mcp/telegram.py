@@ -11,6 +11,7 @@ from telethon import TelegramClient, utils
 from telethon.sessions import StringSession
 from telethon.tl.types import Channel, Chat, Message, User
 
+from . import __version__
 from .config import Settings
 
 _client: TelegramClient | None = None
@@ -32,7 +33,7 @@ def build_client(settings: Settings) -> TelegramClient:
         settings.api_id,
         settings.api_hash,
         device_model="telegram-channels-mcp",
-        app_version="0.1.0",
+        app_version=__version__,
     )
 
 
@@ -52,7 +53,7 @@ async def get_client(settings: Settings) -> TelegramClient:
         return _client
 
 
-_LINK = re.compile(r"^(?:https?://)?(?:t|telegram)\.me/(?:s/)?(?P<rest>.+)$", re.I)
+_LINK = re.compile(r"^(?:https?://)?(?:t|telegram)\.me/(?:s/)?(?P<rest>.+)$", re.IGNORECASE)
 
 
 async def resolve(client: TelegramClient, ref: str) -> Any:

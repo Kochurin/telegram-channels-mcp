@@ -40,7 +40,7 @@ class Settings:
     write_allowlist: list[str] = field(default_factory=list)
 
     @classmethod
-    def load(cls) -> "Settings":
+    def load(cls) -> Settings:
         _load_env_files()
         api_id = os.environ.get("TELEGRAM_API_ID", "").strip()
         api_hash = os.environ.get("TELEGRAM_API_HASH", "").strip()

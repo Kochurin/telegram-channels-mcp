@@ -2,7 +2,7 @@
 .env
 *.session
 *.session-journal
-session*
+*.session.*
 
 # python
 __pycache__/
